@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<title>Weather App</title>
+<meta name="viewport" content="width=device-width" />
+<link rel="stylesheet" href="style.css" />
+<script src="fetch.js"></script>
+<h1>Weather App</h1>
+
+<form>
+  <label for="cityname">City Name</label>
+  <input id="cityname" required />
+  <input id="btnGetWeather" type="button" value="Get Weather" />
+
+  <section id="output">
+    <p id="temperature"></p>
+  </section>
+</form>
+
+<script>
+  var btnGetWeather = document.querySelector("#btnGetWeather");
+  btnGetWeather.addEventListener("click", () => {
+    var key = "5c843d9979ebdc7d3d1a6a331c32aa61"; // this is not a valid key, you can get yours for free from openweathermap
+    var city = document.querySelector("#cityname").value;
+    city = encodeURIComponent(city);
+    var url =
+      "https://api.openweathermap.org/data/2.5/weather?q=" +
+      city +
+      "&appid=" +
+      key;
+    fetch(url)
+      .then(response => {
+        return response.json();
+      })
+      .then(weatherData => {
+        var temperature = weatherData.main.temp;
+        var tempC = temperature - 273.15;
+        var tempF = (temperature * 9) / 5 - 459.67;
+        var p = document.querySelector("#temperature");
+        p.innerHTML = tempC.toFixed(1) + " C / " + tempF.toFixed(1) + " F";
+        p.className = "";
+
+        if (tempC < 12) {
+          p.className = "cold";
+        }
+        if (tempC > 24) {
+          p.className = "hot";
+        }
+      })
+      .catch(() => {
+        alert("Weather not available");
+      });
+  });
+</script>
